@@ -380,25 +380,25 @@ public class AnimatedMovies {
             ArrayList<String> zoznamHercov = new ArrayList<>();
 
             while ((line = reader.readLine()) != null) {
+                line = line.trim(); // Trim the line to remove any leading/trailing whitespace
                 if (line.startsWith("Druh: ")) {
-                    druh = line.substring(6);
+                    druh = line.substring(6).trim();
                 } else if (line.startsWith("Meno: ")) {
-                    nazov = line.substring(6);
+                    nazov = line.substring(6).trim();
                 } else if (line.startsWith("Režisér: ")) {
-                    reziser = line.substring(9);
+                    reziser = line.substring(9).trim();
                 } else if (line.startsWith("Rok: ")) {
-                    rok = Integer.parseInt(line.substring(5));
+                    rok = Integer.parseInt(line.substring(5).trim());
                 } else if (line.startsWith("Hodnotenie: ")) {
-                    rating = Integer.parseInt(line.substring(12));
+                    rating = Integer.parseInt(line.substring(12).trim());
                 } else if (line.startsWith("Komentár: ")) {
-                    comment = line.substring(10);
-                } else if (line.startsWith("Odporúčaný vek: ")) {
-                    vek = Integer.parseInt(line.substring(15));
-                }  else if (!line.trim().isEmpty() && !line.startsWith("Druh: ") && !line.startsWith("Meno: ") && !line.startsWith("Režisér: ") && !line.startsWith("Rok: ") && !line.startsWith("Hodnotenie: ") && !line.startsWith("Komentár: ") && !line.startsWith("Odporúčaný vek: ")) {
-                    zoznamHercov.add(line.trim());
+                    comment = line.substring(10).trim();
+                } else if (line.startsWith("Vek: ")) {
+                    vek = Integer.parseInt(line.substring(15).trim());
+                } else if (!line.isEmpty() && !line.startsWith("Druh: ") && !line.startsWith("Meno: ") && !line.startsWith("Režisér: ") && !line.startsWith("Rok: ") && !line.startsWith("Hodnotenie: ") && !line.startsWith("Komentár: ") && !line.startsWith("Odporúčaný vek: ")) {
+                    zoznamHercov.add(line);
                 }
             }
-
 
             Movie movie;
             if ("Animated movie".equals(druh)) {
@@ -408,6 +408,7 @@ public class AnimatedMovies {
             }
 
             MovieMap.put(nazov, movie);
+            new Database().saveMovies(MovieMap);
             System.out.println("Debug: Successfully read movie " + nazov + " from file.");
             return movie;
         } catch (IOException e) {

@@ -133,8 +133,8 @@ public class Play {
                             break;
                     }
                 } else {
-                    input.nextLine(); // Clear the buffer
                     System.out.println("Invalid input. Please enter a number from 0 to 10.");
+                    input.nextLine(); // Clear the buffer
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a number from 0 to 10.");
