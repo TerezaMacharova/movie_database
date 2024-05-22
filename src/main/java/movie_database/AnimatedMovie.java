@@ -5,25 +5,25 @@ import java.util.ArrayList;
 
 public class AnimatedMovie extends Movie {
 
-    private int ratings;
+    //private int rating;
     private int vek;
 
-    public AnimatedMovie(String meno, String reziser, int rok , int hodnotenie, String comment, int vek, ArrayList<String> zoznamHercov) {
+    public AnimatedMovie(String meno, String reziser, int rok , int rating, String comment, int vek, ArrayList<String> zoznamHercov) {
         super("Animated movie", meno, reziser, rok,comment, zoznamHercov);
-        this.zoznamHercov=zoznamHercov;
-        this.ratings = hodnotenie;
+        this.actorsList =zoznamHercov;
+        this.rating = rating;
         this.vek = vek;
     }
 
 
     public int getRatings() {
-        return ratings;
+        return rating;
     }
 
-    @Override
-    public boolean setRatings(int ratings) {
-        if (ratings >= 1 && ratings <= 10) {
-            this.ratings = (int) ratings;
+
+    public boolean setRatings(int rating) {
+        if (rating >= 1 && rating <= 10) {
+            this.rating = (int) rating;
             return true;
         }
         return false;
@@ -40,5 +40,5 @@ public class AnimatedMovie extends Movie {
 
     @Override
     public String toString() {
-        return super.toString() + "\nAnimatori: " + zoznamHercov + "\nHodnotenie: " + ratings +  "\nOdporuceny vek: " + vek;
+        return super.toString() + "\nAnimatori: " + actorsList + "\nHodnotenie: " + rating +  "\nOdporuceny vek: " + vek;
     }}

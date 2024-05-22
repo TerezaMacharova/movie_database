@@ -5,342 +5,354 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 
-public class AnimatedMovies
-{
+public class AnimatedMovies {
     public static Map<String, Movie> MovieMap;
 
-    public AnimatedMovies()
-    {
-        MovieMap = new HashMap<>();
+
+    public AnimatedMovies() {
+        Database jsonDatabase = new Database();
+        MovieMap = jsonDatabase.loadMovies();
+        if (MovieMap == null) {
+            MovieMap = new HashMap<>();
+        }
     }
-    public boolean setFilm(String druh, String meno, String reziser, int hodnotenie,String comment, int rok, int vek, ArrayList<String> zoznamHercov)
-    {
-        if (druh.equals("Hrany film"))
-        {
-            if (MovieMap.put(meno, new Live_action_movie(meno, reziser, rok, hodnotenie,comment,zoznamHercov)) == null)
-            {
+
+
+    public boolean setFilm(String druh, String meno, String reziser, int hodnotenie, String comment, int rok, int vek, ArrayList<String> zoznamHercov) {
+        if (druh.equals("Live action movie")) {
+            if (MovieMap.put(meno, new Live_action_movie(meno, reziser, rok, hodnotenie, comment, zoznamHercov)) == null) {
                 Movie film = MovieMap.get(meno);
-                film.setRatings(hodnotenie);
+                film.setRating(hodnotenie);
                 film.setComment(comment);
                 return true;
             }
-        } else if (druh.equals("Animovaný film"))
-        {
-            if (MovieMap.put(meno, new AnimatedMovie(meno, reziser, rok, hodnotenie,comment, vek, zoznamHercov)) == null)
-            {
+        } else if (druh.equals("Animated movie")) {
+            if (MovieMap.put(meno, new AnimatedMovie(meno, reziser, rok, hodnotenie, comment, vek, zoznamHercov)) == null) {
                 Movie movie = MovieMap.get(meno);
-                movie.setRatings(hodnotenie);
+                movie.setRating(hodnotenie);
                 movie.setComment(comment);
                 return true;
             }
-        } return false;
+        }
+        return false;
     }
 
-
-    public void addFilm() {Scanner sc = new Scanner(System.in);
+    public String addMovie() {
+        Scanner sc = new Scanner(System.in);
         Scanner input = new Scanner(System.in);
-        System.out.println("Vyberte druh filmu (1 pre hraný film, 2 pre animovaný film):");
+        System.out.println("Enter the type of the movie (1 for live action, 2 for animated):");
         int filmType = input.nextInt();
         input.nextLine();
-        System.out.println("Zadajte názov filmu:");
-        String meno = input.nextLine();
 
-        System.out.println("Zadajte režiséra filmu:");
-        String reziser = input.nextLine();
+        System.out.println("Enter the name of the movie:");
+        String name = input.nextLine();
 
-        System.out.println("Zadajte rok vydania filmu:");
+        System.out.println("Enter the name of the director:");
+        String director = input.nextLine();
 
-        int rok = Play.pouzeCelaCisla(sc);
+        System.out.println("Enter the year of release:");
+        int year = Play.onlyWholeNumber(sc);
 
-        Movie movie ;
+        Movie movie;
 
-        if (filmType == 1)
-        {
-            ArrayList<String> zoznamHercov = new ArrayList<String>();
-            System.out.println("Zadajte koľko hercov chcete zadať: ");
-            int pocet = Play.pouzeCelaCisla(sc);
+        if (filmType == 1) {
+            ArrayList<String> actorsList = new ArrayList<>();
+            System.out.println("How many actors do you want to add?");
+            int number = Play.onlyWholeNumber(sc);
 
-            System.out.println("Zadajte jednotlivých hercov : ");
-            for (int i = 0; i < pocet; i++)
-            {
-                String herec = input.nextLine();
-                zoznamHercov.add(herec);
+            System.out.println("Enter actor names: ");
+            for (int i = 0; i < number; i++) {
+                String actor = input.nextLine();
+                actorsList.add(actor);
             }
 
-            System.out.println("Chcete zanechať komentár? (ano/nie):");
-            String choice= input.nextLine();
-            String comment=null;
-            if (choice.equalsIgnoreCase("ano"))
-            {
-                System.out.println("Zadajte komentár:");
+            System.out.println("Do you want to leave a comment? (yes/no):");
+            String choice = input.nextLine();
+            String comment = null;
+            if (choice.equalsIgnoreCase("yes")) {
+                System.out.println("Enter the comment:");
+                comment = input.nextLine();
             }
-            comment = input.nextLine();
 
-
-            System.out.println("Zadajte hodnotenie divákov (1-5):");
-            int hodnotenie = input.nextInt();
+            System.out.println("Enter viewer rating (1-10):");
+            int rating = input.nextInt();
 
             input.nextLine();
-            movie = new Live_action_movie(meno, reziser, rok, hodnotenie,comment, zoznamHercov);
-            boolean success = ((Live_action_movie) movie).setRatings(hodnotenie);
+            movie = new Live_action_movie(name, director, year, rating, comment, actorsList);
+            boolean success = movie.setRating(rating);
 
-            if (!success)
-            {
-                System.out.println("Neplatné hodnotenie divákov. Hodnotenie musí byť v rozmedzí 1-5.");
-                return;
+            if (!success) {
+                System.out.println("Invalid rating. Rating must be between 1 and 10.");
+                return name;
             }
-             movie = new Live_action_movie(meno, reziser,  rok, hodnotenie,comment, zoznamHercov);
+            movie = new Live_action_movie(name, director, year, rating, comment, actorsList);
 
-        } else if (filmType == 2)
-        {
-            ArrayList<String> zoznamHercov = new ArrayList<String>();
-            System.out.println("Zadajte koľko animátorov chcete zadať: ");
-            int pocet = Play.pouzeCelaCisla(sc);
+        } else if (filmType == 2) {
+            ArrayList<String> actorsList = new ArrayList<>();
+            System.out.println("How many animators do you want to add?");
+            int number = Play.onlyWholeNumber(sc);
 
-            System.out.println("Zadajte jednotlivých animátorov: ");
-
-            for (int i = 0; i < pocet; i++)
-            {
-                String herec = input.nextLine();
-                zoznamHercov.add(herec);
+            System.out.println("Enter animator names: ");
+            for (int i = 0; i < number; i++) {
+                String actor = input.nextLine();
+                actorsList.add(actor);
             }
 
-            System.out.println("Zadajte doporučený vek diváka:");
-            int vek = input.nextInt();
+            System.out.println("Enter recommended age:");
+            int age = input.nextInt();
             input.nextLine();
-            System.out.println("Chcete zanechať komentár? (ano/nie):");
+            System.out.println("Do you want to leave a comment? (yes/no):");
             String choice = input.nextLine();
 
             String comment = null;
 
-            if (choice.equalsIgnoreCase("ano")) {
-                System.out.println("Zadajte komentár:");
+            if (choice.equalsIgnoreCase("yes")) {
+                System.out.println("Enter the comment:");
                 comment = input.nextLine();
-            } else {
-                System.out.println("Žiadny komentár nebol zadaný.");
             }
 
-
-
-            System.out.println("Zadajte hodnotenie divákov (1-10):");
-            int hodnotenie = input.nextInt();
+            System.out.println("Enter viewer rating (1-10):");
+            int rating = input.nextInt();
             input.nextLine();
-            movie = new AnimatedMovie(meno, reziser, rok, hodnotenie,comment, vek, zoznamHercov);
-            boolean success = ((AnimatedMovie) movie).setRatings(hodnotenie);
+
+            movie = new AnimatedMovie(name, director, year, rating, comment, age, actorsList);
+            boolean success = movie.setRating(rating);
             if (!success) {
-                System.out.println("Neplatné hodnotenie divákov. Hodnotenie musí byť v rozmedzí 1-10.");
-                return;
+                System.out.println("Invalid rating. Rating must be between 1 and 10.");
+                return name;
             }
 
-
-
-            movie = (Movie) new AnimatedMovie(meno, reziser, rok, hodnotenie,comment, vek, zoznamHercov);
+            movie = new AnimatedMovie(name, director, year, rating, comment, age, actorsList);
         } else {
-            System.out.println("Neplatný výber typu filmu.");
-            return;
+            System.out.println("Invalid movie type.");
+            return name;
         }
 
-        MovieMap.put(meno, movie);
-        System.out.println("Film " + meno + " bol úspešne pridaný.");
+        MovieMap.put(name, movie);
+        new Database().saveMovies(MovieMap);
+        return "Movie was added successfully.";
+    }
+
+    public String editMovie() {
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Enter the name of a movie you want to change: ");
+            String name = scanner.nextLine();
+            Movie movie = getMovie(name);
+
+            if (movie == null) {
+                return "The film was not found.";
+            }
+
+            System.out.println("What do you want to change?");
+            System.out.println("1. Name\n2. Director\n3. Year\n4. Rating\n5. Comment\n6. Recommended age");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("New name: ");
+                    String newName = scanner.nextLine();
+                    movie.setName(newName);
+                    MovieMap.remove(name);  // Remove old entry
+                    MovieMap.put(newName, movie);  // Add new entry with new key
+                    break;
+                case 2:
+                    System.out.print("Enter new director: ");
+                    String newDirector = scanner.nextLine();
+                    movie.setDirector(newDirector);
+                    break;
+                case 3:
+                    System.out.print("Enter new year: ");
+                    int newYear = scanner.nextInt();
+                    //MovieMap.remove();  // Remove old entry
+                    movie.setYear(newYear);
+                    break;
+                case 4:
+                    System.out.print("Enter new rating: ");
+                    int newRating = scanner.nextInt();
+                    if (!movie.setRating(newRating)) {
+                        return "Invalid rating. Please enter a number within the valid range.";
+                    }
+                   break;
+                case 5:
+                    System.out.print("Enter new comment: ");
+                    String newComment = scanner.nextLine();
+                    movie.setComment(newComment);
+                    break;
+                case 6:
+                    if (!(movie instanceof AnimatedMovie)) {
+                        return "This film is not animated.";
+                    }
+                    System.out.print("Enter new recommended age: ");
+                    int newAge = scanner.nextInt();
+                    ((AnimatedMovie) movie).setVek(newAge);
+                    break;
+                default:
+                    return "Invalid choice.";
+            }
+
+            new Database().saveMovies(MovieMap);  // Save changes to JSON file
+            return "Changes saved successfully.\n" + movie.toString();
+        } catch (InputMismatchException e) {
+            return "Invalid input. Please enter a valid number.";
+        } catch (Exception e) {
+            return "An error occurred: " + e.getMessage();
+        }
     }
 
 
-    public String editFilm() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Zadajte meno filmu, ktorý chceš zmeniť: ");
-        String meno = scanner.nextLine();
-        Movie movie = getFilm(meno);
-
+    public Movie getMovie(String name) {
+        System.out.println("Debug: Retrieving movie with name: " + name);
+        Movie movie = MovieMap.get(name);
         if (movie == null) {
-            return "Film sa nenašiel.";
+            System.out.println("Debug: Movie not found.");
+        } else {
+            System.out.println("Debug: Movie found: " + movie);
         }
-
-        System.out.println("Čo chceš zmeniť?");
-        System.out.println("1. Meno");
-        System.out.println("2. Režisér");
-        System.out.println("3. Rok");
-        System.out.println("4. Hodnotenie");
-        System.out.println("5. Koment");
-        System.out.println("6. Odporúčaný vek");
-        System.out.print("Zadaj svoj výber: ");
-
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
-        switch (choice) {
-            case 1:
-                System.out.print("Nové meno: ");
-                String newMeno = scanner.nextLine();
-                movie.setMeno(newMeno);
-                MovieMap.remove(meno);
-                MovieMap.put(newMeno, movie);
-                return "Vytvoril si nové meno.\n" + movie.toString();
-            case 2:
-                System.out.print("Zadaj režiséra: ");
-                String newReziser = scanner.nextLine();
-                movie.setReziser(newReziser);
-                return "Zmenil si režiséra.\n" + movie.toString();
-            case 3:
-                System.out.print("Zadaj nový rok: ");
-                int newRok = scanner.nextInt();
-                movie.setRok(newRok);
-                return "Zmenil si rok.\n" + movie.toString();
-            case 4:
-                System.out.print("Zadaj nové hodnotenie: ");
-                int newHodnotenie = scanner.nextInt();
-                movie.setRatings(newHodnotenie);
-                return "Zmenil si hodnotenie.\n" + movie.toString();
-            case 5:
-                System.out.print("Zadaj koment: ");
-                String newKoment = scanner.nextLine();
-                movie.setComment(newKoment);
-                return "Zmenil si koment.\n" + movie.toString();
-            case 6:
-                if (!(movie instanceof AnimatedMovie)) {
-                    return "Tento film nie je animovaný";
-                }
-                System.out.print("Zadaj nový odporúčaný vek: ");
-                int newVek = scanner.nextInt();
-                ((AnimatedMovie) movie).setVek(newVek);
-                return "Zmenil si odporúčaný vek.\n" + movie.toString();
-            default:
-                return "Chyba.";
-        }
+        return movie;
     }
 
-
-
-    public Movie getFilm(String meno)
-    {
-        return MovieMap.get(meno);
-
-    }
-
-    public boolean setHodnotenie(String meno, int hodnoceni) {
-        Movie movie = MovieMap.get(meno);
+    public boolean setRanking(String name, int ranking) {
+        Movie movie = MovieMap.get(name);
         if (movie == null) {
             return false;
         }
-        return movie.setRatings(hodnoceni);
+        boolean success = movie.setRating(ranking);
+        if (success) {
+            new Database().saveMovies(MovieMap);
+        }
+        return success;
     }
 
 
-    public boolean vymazFilm(String meno)
-    {
-        if (MovieMap.remove(meno)!=null)
+    public boolean removeMovie(String name) {
+        if (MovieMap.remove(name) != null) {
+            new Database().saveMovies(MovieMap);
             return true;
+        }
         return false;
     }
 
-    public void vypisFilmov() {
+
+    public void movieListing() {
+        System.out.println("Debug: MovieMap size is " + MovieMap.size()); // Debug statement
+
         for (Movie movie : MovieMap.values()) {
-            System.out.println("Názov filmu: " + movie.getMeno());
-            System.out.println("Režisér: " + movie.getReziser());
+            if (movie == null) {
+                System.out.println("Debug: Found a null movie entry.");
+                continue;
+            }
+
+            System.out.println("Debug: Processing movie - " + movie.getName());
+
+            System.out.println("Movie name: " + movie.getName());
+            System.out.println("Director: " + movie.getDirector());
 
             if (movie instanceof Live_action_movie) {
                 Live_action_movie live_action_movie = (Live_action_movie) movie;
-                System.out.println("Zoznam hercov: " + live_action_movie.getZoznamHercov());
-            } else if (movie instanceof Live_action_movie) {
+                System.out.println("List of actors: " + live_action_movie.getActorsList());
+            } else if (movie instanceof AnimatedMovie) {
                 AnimatedMovie animated_movie = (AnimatedMovie) movie;
-                System.out.println("Zoznam animátorov: " + animated_movie.getZoznamHercov());
-                System.out.println("Doporučený vek diváka: " + animated_movie.getVek());
+                System.out.println("List of animators: " + animated_movie.getActorsList());
+                System.out.println("Recommended age: " + animated_movie.getVek());
             }
 
-            System.out.println("Hodnotenie divákov: " + movie.getRatings());
-            System.out.println("Hodnotenie divákov-komentár: " + movie.getComment());
-            System.out.println("Rok vydania: " + movie.getRok());
+            System.out.println("Audience rating: " + movie.getRatings());
+            System.out.println("Audience rating comment: " + movie.getComment());
+            System.out.println("Year of release: " + movie.getYear());
             System.out.println();
         }
     }
 
-    public static void HerecvJednomFilme (String meno) {
+
+
+    public static void actorOneMovie(String name) {
+        System.out.println("Debug: Listing movies with actor/animator: " + name);
+        boolean found = false;
         try {
             for (Movie movie : MovieMap.values()) {
-                if (movie.getZoznamHercov().contains(meno)) {
-                    System.out.println(movie.getMeno());
+                if (movie.getActorsList().contains(name)) {
+                    System.out.println("Movie name: " + movie.getName());
+                    System.out.println("Director: " + movie.getDirector());
+                    System.out.println("Year: " + movie.getYear());
+                    System.out.println("Comment: " + movie.getComment());
+                    System.out.println("Actors/Animators: " + movie.getActorsList());
+                    found = true;
                 }
+            }
+            if (!found) {
+                System.out.println("No movies found with actor/animator: " + name);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static void HerecVoViacejFilmochMetoda() {
-        HashMap<String, ArrayList<Movie>> HerecVoViacejFilmoch = new HashMap<>();
 
+
+    public static void actorMoreMovies() {
+        HashMap<String, ArrayList<Movie>> actorMoreMovies = new HashMap<>();
 
         for (Movie movie : MovieMap.values()) {
-
-            for (String herec : movie.getZoznamHercov()) {
+            for (String herec : movie.getActorsList()) {
                 String meno = herec;
-
-                if (HerecVoViacejFilmoch.containsKey(meno)) {
-                    ArrayList<Movie> priradenie = HerecVoViacejFilmoch.get(meno);
-                    priradenie.add(movie);
-                    HerecVoViacejFilmoch.put(meno, priradenie);
+                if (actorMoreMovies.containsKey(meno)) {
+                    ArrayList<Movie> assignments = actorMoreMovies.get(meno);
+                    assignments.add(movie);
+                    actorMoreMovies.put(meno, assignments);
                 } else {
-
-                    ArrayList<Movie> priradenie = new ArrayList<>();
-                    priradenie.add(movie);
-                    HerecVoViacejFilmoch.put(meno, priradenie);
+                    ArrayList<Movie> assignments = new ArrayList<>();
+                    assignments.add(movie);
+                    actorMoreMovies.put(meno, assignments);
                 }
             }
         }
 
-
-        for (String meno : HerecVoViacejFilmoch.keySet()) {
-            ArrayList<Movie> priradenie = HerecVoViacejFilmoch.get(meno);
-            if (priradenie.size() > 1) {
+        for (String meno : actorMoreMovies.keySet()) {
+            ArrayList<Movie> assignments = actorMoreMovies.get(meno);
+            if (assignments.size() > 1) {
                 System.out.println("Herec: " + meno);
                 System.out.println("Filmy:");
-                for (Movie film : priradenie) {
-                    System.out.println("- " + film.getMeno() + " (" + film.getRok() + ")");
+                for (Movie film : assignments) {
+                    System.out.println("- " + film.getName() + " (" + film.getYear() + ")");
                 }
             }
         }
     }
 
-    public static void HerecVoViacejFilmochMetoda2() {
-        System.out.println("Zoznam hercov,animátorov, ktorý sa podielali na viacerých filmoch:");
-        HerecVoViacejFilmochMetoda();
+
+    public static void actorMoreMoviesPrint() {
+        System.out.println("List of actors and animators who participated in multiple movies:");
+        actorMoreMovies();
     }
 
 
-
-    public void ulozDoSuboru(String meno) {
+    public void saveToFile(String meno) {
         Movie movie = MovieMap.get(meno);
         if (movie != null) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(meno + ".txt"))) {
-                writer.write("Druh: " + movie.getDruh());
+                writer.write("Druh: " + movie.getType());
                 writer.newLine();
-                writer.write("Meno: " + movie.getMeno());
+                writer.write("Meno: " + movie.getName());
                 writer.newLine();
-                writer.write("Režisér: " + movie.getReziser());
+                writer.write("Režisér: " + movie.getDirector());
                 writer.newLine();
-                writer.write("Rok: " + movie.getRok());
+                writer.write("Rok: " + movie.getYear());
                 writer.newLine();
                 writer.write("Hodnotenie: " + movie.getRatings());
                 writer.newLine();
-                writer.write("Hodnotenie-komentár: " + movie.getComment());
+                writer.write("Komentár: " + movie.getComment());
                 writer.newLine();
                 if (movie instanceof AnimatedMovie) {
                     AnimatedMovie animated_movie = (AnimatedMovie) movie;
                     writer.write("Odporúčaný vek: " + animated_movie.getVek());
                     writer.newLine();
                 }
-                //writer.write("Seznam osob:");
                 writer.newLine();
-                for (String herec : movie.getZoznamHercov()) {
+                for (String herec : movie.getActorsList()) {
                     writer.write(herec);
                     writer.newLine();
                 }
@@ -354,127 +366,54 @@ public class AnimatedMovies
     }
 
 
-
-
-
-    public static Movie nacitajZoSuboru(String meno) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(meno + ".txt"))) {
-            String druh = reader.readLine().substring(6);
-            String nazov = reader.readLine().substring(6);
-            String reziser = reader.readLine().substring(9);
-            int rok = Integer.parseInt(reader.readLine().substring(5));
-            int hodnotenie = Integer.parseInt(reader.readLine().substring(12));
-            String comment = reader.readLine().substring(8);
-            Movie movie;
-            if (druh.equals("Animovaný film")) {
-                int vek = Integer.parseInt(reader.readLine().substring(14));
-                movie = new AnimatedMovie(nazov, reziser, rok, hodnotenie,comment, vek, new ArrayList<>());
-            } else {
-                movie = new Live_action_movie(nazov, reziser, rok, hodnotenie,comment, new ArrayList<>());
-            }
-
+    public static Movie readFromFile(String fileName) {
+        System.out.println("Debug: Reading from file " + fileName);
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
+            String druh = null;
+            String nazov = null;
+            String reziser = null;
+            int rok = 0;
+            int rating = 0;
+            String comment = null;
+            int vek = 0;
             ArrayList<String> zoznamHercov = new ArrayList<>();
+
             while ((line = reader.readLine()) != null) {
-                zoznamHercov.add(line);
-            }
-            movie.getZoznamHercov().addAll(zoznamHercov);
-            MovieMap.put(meno, movie);
-
-            return movie;
-        } catch (IOException e) {
-            System.out.println("Chyba pri čítaní zo súboru.");
-        }
-        return null;
-    }
-
-
-
-
-    public static void insertFilm(Connection conn)  throws SQLException {
-
-        for(Movie movie : MovieMap.values()) {
-            if(movie instanceof Live_action_movie) {
-                String sql = "INSERT INTO movies (druh, meno, reziser,rok,hodnotenie,comment) VALUES (?, ?, ?, ?, ?,?)";
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setString(1, "hranyFilm");
-                stmt.setString(2, movie.getMeno());
-                stmt.setString(3, movie.getReziser());
-                stmt.setInt(4, movie.getRok());
-                stmt.setInt(5,movie.getRatings());
-                stmt.setString(6,movie.getComment());
-                stmt.executeUpdate();
-                for (String herec: movie.getZoznamHercov()) {
-                    sql="INSERT INTO herci(meno,herec) VALUES (?,?)";
-                    stmt = conn.prepareStatement(sql);
-                    stmt.setString(1,movie.getMeno());
-                    stmt.setString(2,herec);
-                    stmt.executeUpdate();
-
+                if (line.startsWith("Druh: ")) {
+                    druh = line.substring(6);
+                } else if (line.startsWith("Meno: ")) {
+                    nazov = line.substring(6);
+                } else if (line.startsWith("Režisér: ")) {
+                    reziser = line.substring(9);
+                } else if (line.startsWith("Rok: ")) {
+                    rok = Integer.parseInt(line.substring(5));
+                } else if (line.startsWith("Hodnotenie: ")) {
+                    rating = Integer.parseInt(line.substring(12));
+                } else if (line.startsWith("Komentár: ")) {
+                    comment = line.substring(10);
+                } else if (line.startsWith("Odporúčaný vek: ")) {
+                    vek = Integer.parseInt(line.substring(15));
+                }  else if (!line.trim().isEmpty() && !line.startsWith("Druh: ") && !line.startsWith("Meno: ") && !line.startsWith("Režisér: ") && !line.startsWith("Rok: ") && !line.startsWith("Hodnotenie: ") && !line.startsWith("Komentár: ") && !line.startsWith("Odporúčaný vek: ")) {
+                    zoznamHercov.add(line.trim());
                 }
             }
 
-            else if (movie instanceof AnimatedMovie){   String Database ="INSERT INTO movies (druh, meno, reziser,  rok,hodnotenie,comment,vek)"+" VALUES (?, ?, ?, ?, ?,?,?)";
-                PreparedStatement stmt = conn.prepareStatement(Database);
-                stmt.setString(1, "animovanyFilm");
-                stmt.setString(2, movie.getMeno());
-                stmt.setString(3, movie.getReziser());
-                stmt.setInt(4, movie.getRok());
-                stmt.setInt(5,movie.getRatings());
-                stmt.setString(6,movie.getComment());
-                stmt.setInt(7, ((AnimatedMovie) movie).getVek());
-                stmt.executeUpdate();
-                for (String herec: movie.zoznamHercov) {
-                    Database = "INSERT INTO herci(meno,herec) VALUES (?,?)";
-                    stmt = conn.prepareStatement(Database);
-                    stmt.setString(1,movie.getMeno());
-                    stmt.setString(2,herec);
-                    stmt.executeUpdate();
 
-                }}}}
+            Movie movie;
+            if ("Animated movie".equals(druh)) {
+                movie = new AnimatedMovie(nazov, reziser, rok, rating, comment, vek, zoznamHercov);
+            } else {
+                movie = new Live_action_movie(nazov, reziser, rok, rating, comment, zoznamHercov);
+            }
 
-
-
-
-    public static void loadMovie(Connection conn)throws SQLException{
-
-        Statement stmt=conn.createStatement();
-        String query="SELECT * FROM movies";
-        ResultSet rs=stmt.executeQuery(query);
-        while(rs.next()) {
-            if (rs.getString("druh").equals("hranyFilm")) {
-                String meno = rs.getString("meno");
-
-                ArrayList <String>zoznam = uploadZoznam(meno,conn);
-
-                Movie movie = new Live_action_movie(rs.getString("meno"), rs.getString("reziser"),rs.getInt("rok"),rs.getInt("hodnotenie"),rs.getString("comment"),zoznam);
-                Statement state = conn.createStatement();
-
-                MovieMap.put(meno, movie);
-
-            }else {
-                String meno=rs.getString("meno");
-                ArrayList<String>zoznam= uploadZoznam(meno,conn);
-                Movie movie = new AnimatedMovie(rs.getString("meno"), rs.getString("reziser"),rs.getInt("rok"),rs.getInt("hodnotenie"),rs.getString("comment"),rs.getInt("vek"),zoznam);
-                Statement state = conn.createStatement();
-                MovieMap.put(meno, movie);
-
-            }}}
-
-
-
-
-    static  ArrayList<String> uploadZoznam(String meno,Connection conn) throws SQLException
-    {
-        ArrayList<String> zoznam= new ArrayList<String>();
-
-        Statement stmt = conn.createStatement();
-        ResultSet herec = stmt.executeQuery("SELECT * FROM herci WHERE meno = '"+meno+"'");
-        while (herec.next())
-        {
-            zoznam.add(herec.getString("meno"));
+            MovieMap.put(nazov, movie);
+            System.out.println("Debug: Successfully read movie " + nazov + " from file.");
+            return movie;
+        } catch (IOException e) {
+            System.out.println("Chyba pri čítaní zo súboru.");
+            e.printStackTrace();
         }
-        MovieMap.putAll((Map<? extends String, ? extends Movie>) herec);
-        return zoznam;
+        return null;
     }
 }

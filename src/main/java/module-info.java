@@ -4,9 +4,10 @@
  *
  */
 module movie_database {
-    requires java.sql;
     requires java.security.sasl;
     requires com.google.gson;
+
+    opens movie_database to com.google.gson;
 }
 
 /* requires - dependencies on other modules

@@ -4,68 +4,67 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class Movie {
-    protected String druh;
-    protected String meno;
-    protected String reziser;
-    protected int rok;
-    protected int hodnotenie;
+    protected String type;
+    protected String name;
+    protected String director;
+    protected int year;
+    protected int rating;
     protected String comment;
-    protected ArrayList<String> zoznamHercov;
+    protected ArrayList<String> actorsList;
 
-    public Movie(String druh, String meno, String reziser, int rok,String comment, ArrayList<String> zoznamHercov) {
-        this.druh = druh;
-        this.meno = meno;
-        this.reziser = reziser;
-        this.rok = rok;
-        this.comment=comment;
-        this.zoznamHercov = zoznamHercov;
+    public Movie(String type, String name, String director, int year, String comment, ArrayList<String> actorsList) {
+        this.type = type;
+        this.name = name;
+        this.director = director;
+        this.year = year;
+        this.comment = comment;
+        this.actorsList = actorsList;
     }
 
-    public String getDruh() {
-        return druh;
+    public String getType() {
+        return type;
     }
 
-    public String getMeno() {
-        return meno;
+    public String getName() {
+        return name;
     }
 
-    public ArrayList<String> getZoznamHercov() {
-        return zoznamHercov;
+    public ArrayList<String> getActorsList() {
+        return actorsList;
     }
 
-    public String getReziser() {
-        return reziser;
+    public String getDirector() {
+        return director;
     }
 
     public String getComment() {
         return comment;
     }
-    public int getRok() {
-        return rok;
+    public int getYear() {
+        return year;
     }
 
-    public int getRatings() {
-        return hodnotenie;
-    }
+    public abstract int getRatings();
 
-    public boolean setRatings(int rating) {
+    public boolean setRating(int rating) {
         if (rating < 1 || rating > 10) {
-            throw new IllegalArgumentException("Chybny priemer: hodnotenie must be between 1 and 10");
+            throw new IllegalArgumentException("Ratings must be between 1 and 10");
         }
-        this.hodnotenie = rating;
+        this.rating = rating;
         return true;
     }
 
-    public void setMeno(String meno) {
-        this.meno = meno;
+
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setReziser(String reziser) {
-        this.reziser = reziser;
+    public void setDirector(String director) {
+        this.director = director;
     }
 
-    public void setRok(int rok) {
-        this.rok = rok;
+    public void setYear(int year) {
+        this.year = year;
     }
     public void setComment(String comment) {
         this.comment=comment;
@@ -73,27 +72,18 @@ public abstract class Movie {
 
     public void promptForComment() {
         Scanner input = new Scanner(System.in);
-        System.out.println("Chcete zanechat komentár? (ano/nie):");
+        System.out.println("Do you want to leave comment? (yes/no):");
         String choice = input.nextLine();
 
-        if (choice.equalsIgnoreCase("ano")) {
-            System.out.println("Zadajte komentár:");
+        if (choice.equalsIgnoreCase("yes")) {
+            System.out.println("Enter comment:");
             String comment = input.nextLine();
             setComment(comment);
         }
     }
+
     @Override
     public String toString() {
-        return "Druh: " + druh + "\nMeno: " + meno + "\nReziser: " + reziser + "\nRok: " + rok+ "\nKoment: " + comment ;
+        return "Type: " + type + "\nName: " + name + "\nDirector: " + director + "\nYear: " + year + "\nComment: " + comment ;
     }
-
-
-
 }
-
-
-
-
-
-
-
