@@ -165,7 +165,8 @@ public class AnimatedMovies {
      * @return A message indicating the result of the operation.
      */
     public String editMovie() {
-        try (Scanner scanner = new Scanner(System.in)) {
+        Scanner scanner = new Scanner(System.in);
+        try  {
             System.out.print("Enter the name of a movie you want to change: ");
             String name = scanner.nextLine();
             Movie movie = getMovie(name);
@@ -446,22 +447,32 @@ public class AnimatedMovies {
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim(); // Trim the line to remove any leading/trailing whitespace
+                System.out.println("Debug: Processing line - " + line);
+
                 if (line.startsWith("Druh: ")) {
                     druh = line.substring(6).trim();
+                    System.out.println("Debug: Parsed druh - " + druh);
                 } else if (line.startsWith("Meno: ")) {
                     nazov = line.substring(6).trim();
+                    System.out.println("Debug: Parsed nazov - " + nazov);
                 } else if (line.startsWith("Režisér: ")) {
                     reziser = line.substring(9).trim();
+                    System.out.println("Debug: Parsed reziser - " + reziser);
                 } else if (line.startsWith("Rok: ")) {
                     rok = Integer.parseInt(line.substring(5).trim());
+                    System.out.println("Debug: Parsed rok - " + rok);
                 } else if (line.startsWith("Hodnotenie: ")) {
                     rating = Integer.parseInt(line.substring(12).trim());
+                    System.out.println("Debug: Parsed rating - " + rating);
                 } else if (line.startsWith("Komentár: ")) {
                     comment = line.substring(10).trim();
-                } else if (line.startsWith("Odporúčaný vek: ")) {
-                    vek = Integer.parseInt(line.substring(15).trim());
-                } else if (!line.isEmpty() && !line.startsWith("Druh: ") && !line.startsWith("Meno: ") && !line.startsWith("Režisér: ") && !line.startsWith("Rok: ") && !line.startsWith("Hodnotenie: ") && !line.startsWith("Komentár: ") && !line.startsWith("Odporúčaný vek: ")) {
+                    System.out.println("Debug: Parsed comment - " + comment);
+                } else if (line.startsWith("Vek: ")) {
+                    vek = Integer.parseInt(line.substring(5).trim());
+                    System.out.println("Debug: Parsed vek - " + vek);
+                } else if (!line.isEmpty() && !line.startsWith("Druh: ") && !line.startsWith("Meno: ") && !line.startsWith("Režisér: ") && !line.startsWith("Rok: ") && !line.startsWith("Hodnotenie: ") && !line.startsWith("Komentár: ") && !line.startsWith("Vek: ")) {
                     zoznamHercov.add(line);
+                    System.out.println("Debug: Added to zoznamHercov - " + line);
                 }
             }
 
@@ -477,9 +488,10 @@ public class AnimatedMovies {
             System.out.println("Debug: Successfully read movie " + nazov + " from file.");
             return movie;
         } catch (IOException e) {
-            System.out.println("Error occurred with file reading.");
+            System.out.println("Chyba pri čítaní zo súboru.");
             e.printStackTrace();
         }
         return null;
     }
+
 }

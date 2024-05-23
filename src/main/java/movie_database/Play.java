@@ -47,8 +47,6 @@ public class Play {
 
     /**
      * The main method providing a menu-driven interface for the movie database application.
-     *
-     * @param args Command line arguments (not used).
      */
     public static void main(String[] args) {
         AnimatedMovies movies = new AnimatedMovies();
@@ -70,10 +68,10 @@ public class Play {
 
             try {
                 if (input.hasNextInt()) {
-                    int volba = input.nextInt();
+                    int choice = input.nextInt();
                     input.nextLine(); // Clear the buffer
 
-                    switch (volba) {
+                    switch (choice) {
                         case 1:
                             movies.addMovie();
                             break;
@@ -135,7 +133,7 @@ public class Play {
                             }
                             break;
                         case 8:
-                            movies.editMovie();
+                            System.out.println(movies.editMovie());
                             break;
                         case 9:
                             AnimatedMovies.actorMoreMoviesPrint();
@@ -143,13 +141,12 @@ public class Play {
                         case 10:
                             System.out.println("Enter the name of the actor or animator:");
                             String actorName = input.nextLine();
-                            //input.nextLine();
                             AnimatedMovies.actorOneMovie(actorName);
                             break;
                         case 0:
                             System.exit(0);
                         default:
-                            System.out.println("Neplatná volba. Zvolte prosím číslo od 0 do 10.");
+                            System.out.println("Neplatná choice. Zvolte prosím číslo od 0 do 10.");
                             break;
                     }
                 } else {
@@ -166,4 +163,5 @@ public class Play {
             }
         }
     }
+
 }
