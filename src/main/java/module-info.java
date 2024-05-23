@@ -9,6 +9,3 @@ module movie_database {
 
     opens movie_database to com.google.gson;
 }
-
-/* requires - dependencies on other modules
-* exports - makes packages within the module available to other modules */

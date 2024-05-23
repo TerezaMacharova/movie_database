@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * The Play class provides the main entry point for the application, allowing users to interact with the movie database.
+ * Play class provides the main entry point for the application, allowing users to interact with the movie database.
  */
 public class Play {
 
@@ -21,10 +21,11 @@ public class Play {
                 return sc.nextInt();
             } catch (InputMismatchException e) {
                 sc.nextLine(); // clear the invalid input
-                System.out.println("Zadaj prosim cele cislo");
+                System.out.println("Please enter a whole number.");
             }
         }
     }
+
 
     /**
      * Prompts the user to enter a float number, handling invalid input appropriately.
@@ -33,23 +34,24 @@ public class Play {
      * @return The float number entered by the user.
      */
     public static float onlyNums(Scanner sc) {
-        float cislo;
+        float number;
         try {
-            cislo = sc.nextFloat();
+            number = sc.nextFloat();
         } catch (Exception e) {
-            System.out.println("Nastala vynimka typu " + e.toString());
-            System.out.println("zadaj prosim cislo ");
+            System.out.println("Exception:  " + e.toString());
+            System.out.println("Enter a number please.");
             sc.nextLine();
-            cislo = onlyNums(sc);
+            number = onlyNums(sc);
         }
-        return cislo;
+        return number;
     }
+
 
     /**
      * The main method providing a menu-driven interface for the movie database application.
      */
     public static void main(String[] args) {
-        AnimatedMovies movies = new AnimatedMovies();
+        MovieManager movies = new MovieManager();
         Scanner input = new Scanner(System.in);
 
         while (true) {
@@ -69,7 +71,7 @@ public class Play {
             try {
                 if (input.hasNextInt()) {
                     int choice = input.nextInt();
-                    input.nextLine(); // Clear the buffer
+                    input.nextLine();
 
                     switch (choice) {
                         case 1:
@@ -92,7 +94,7 @@ public class Play {
                             boolean result;
                             if (input.hasNextInt()) {
                                 int ratings = input.nextInt();
-                                input.nextLine(); // Clear the buffer
+                                input.nextLine();
                                 result = movies.setRating(name, ratings);
                                 if (result) {
                                     System.out.println("Rating has been set.");
@@ -100,18 +102,18 @@ public class Play {
                                     System.out.println("Movie wasn't found.");
                                 }
                             } else {
-                                input.nextLine(); // Clear the buffer
+                                input.nextLine();
                                 System.out.println("Invalid input for rating.");
                             }
                             break;
                         case 4:
-                            System.out.println("Zadajte name filmu:");
+                            System.out.println("Enter the name of the movie:");
                             name = input.nextLine();
                             result = movies.removeMovie(name);
                             if (result) {
-                                System.out.println("Film bol úspešne vymazaný.");
+                                System.out.println("Movie was successfully deleted.");
                             } else {
-                                System.out.println("Film nebol nájdený.");
+                                System.out.println("Movie wasn't found.");
                             }
                             break;
                         case 5:
@@ -124,42 +126,42 @@ public class Play {
                             break;
                         case 7:
                             System.out.println("Enter the name of the file:");
-                            String nacistSoubor = input.nextLine();
-                            Movie loadedMovie = AnimatedMovies.readFromFile(nacistSoubor);
+                            String loadFile = input.nextLine();
+                            Movie loadedMovie = MovieManager.readFromFile(loadFile);
                             if (loadedMovie != null) {
-                                System.out.println("Film bol načítaný zo súboru " + nacistSoubor);
+                                System.out.println("Movie was loaded from file " + loadFile);
                             } else {
-                                System.out.println("Chyba pri čítaní zo súboru.");
+                                System.out.println("An error occurred when trying to read from a file.");
                             }
                             break;
                         case 8:
                             System.out.println(movies.editMovie());
                             break;
                         case 9:
-                            AnimatedMovies.actorMoreMoviesPrint();
+                            MovieManager.actorMoreMoviesPrint();
                             break;
                         case 10:
                             System.out.println("Enter the name of the actor or animator:");
                             String actorName = input.nextLine();
-                            AnimatedMovies.actorOneMovie(actorName);
+                            MovieManager.actorOneMovie(actorName);
                             break;
                         case 0:
                             System.exit(0);
                         default:
-                            System.out.println("Neplatná choice. Zvolte prosím číslo od 0 do 10.");
+                            System.out.println("Invalid choice. Please enter a valid number (0-10).");
                             break;
                     }
                 } else {
-                    System.out.println("Invalid input. Please enter a number from 0 to 10.");
-                    input.nextLine(); // Clear the buffer
+                    System.out.println("Invalid input. Please enter a valid number (0-10).");
+                    input.nextLine();
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a number from 0 to 10.");
-                input.nextLine(); // Clear the invalid input
+                System.out.println("Invalid input. Please enter a valid number (0-10).");
+                input.nextLine();
             } catch (NoSuchElementException e) {
                 System.out.println("Unexpected end of input.");
-                input.nextLine(); // Clear the buffer
-                input = new Scanner(System.in); // Reset the scanner
+                input.nextLine();
+                input = new Scanner(System.in);
             }
         }
     }

@@ -1,10 +1,10 @@
 package movie_database;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 /**
- * The Movie class is an abstract representation of a movie.
+ * Movie class is an abstract representation of a movie.
  * It includes common properties and methods for both animated and live-action movies.
  */
 public abstract class Movie {
@@ -15,6 +15,7 @@ public abstract class Movie {
     protected int rating;
     protected String comment;
     protected ArrayList<String> actorsList;
+
 
     /**
      * Constructs a Movie object.
@@ -35,6 +36,7 @@ public abstract class Movie {
         this.actorsList = actorsList;
     }
 
+
     /**
      * Gets the type of the movie.
      *
@@ -43,6 +45,7 @@ public abstract class Movie {
     public String getType() {
         return type;
     }
+
 
     /**
      * Gets the name of the movie.
@@ -53,6 +56,7 @@ public abstract class Movie {
         return name;
     }
 
+
     /**
      * Gets the list of actors involved in the movie.
      *
@@ -61,6 +65,7 @@ public abstract class Movie {
     public ArrayList<String> getActorsList() {
         return actorsList;
     }
+
 
     /**
      * Gets the director of the movie.
@@ -71,6 +76,7 @@ public abstract class Movie {
         return director;
     }
 
+
     /**
      * Gets the comment about the movie.
      *
@@ -80,6 +86,7 @@ public abstract class Movie {
         return comment;
     }
 
+
     /**
      * Gets the year of release of the movie.
      *
@@ -88,6 +95,7 @@ public abstract class Movie {
     public int getYear() {
         return year;
     }
+
 
     /**
      * Gets the rating of the movie.
@@ -110,6 +118,7 @@ public abstract class Movie {
         return true;
     }
 
+
     /**
      * Sets the name of the movie.
      *
@@ -118,6 +127,7 @@ public abstract class Movie {
     public void setName(String name) {
         this.name = name;
     }
+
 
     /**
      * Sets the director of the movie.
@@ -128,6 +138,7 @@ public abstract class Movie {
         this.director = director;
     }
 
+
     /**
      * Sets the year of release of the movie.
      *
@@ -136,6 +147,7 @@ public abstract class Movie {
     public void setYear(int year) {
         this.year = year;
     }
+
 
     /**
      * Sets the comment about the movie.
@@ -154,6 +166,10 @@ public abstract class Movie {
      */
     @Override
     public String toString() {
-        return "Type: " + type + "\nName: " + name + "\nDirector: " + director + "\nYear: " + year + "\nComment: " + comment;
+        return "Type: " + type +
+                "\nName: " + name +
+                "\nDirector: " + director +
+                "\nYear: " + year +
+                "\nComment: " + comment;
     }
 }

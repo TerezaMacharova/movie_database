@@ -40,7 +40,7 @@ public class Database {
     public Map<String, Movie> loadMovies() {
         File file = new File(FILE_PATH);
         if (!file.exists() || file.length() == 0) {
-            System.out.println("Debug: JSON file does not exist or is empty.");
+           // System.out.println("Debug: JSON file does not exist or is empty.");
             return new HashMap<>();
         }
 
@@ -51,8 +51,6 @@ public class Database {
             if (movieMap == null) {
                 movieMap = new HashMap<>();
             }
-            // Check for and remove any null values in the map
-           // movieMap.values().removeIf(movie -> movie == null);
             System.out.println("Debug: Loaded " + movieMap.size() + " movies from JSON.");
             return movieMap;
         } catch (IOException e) {
