@@ -4,8 +4,17 @@ import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ * The Play class provides the main entry point for the application, allowing users to interact with the movie database.
+ */
 public class Play {
 
+    /**
+     * Prompts the user to enter a whole number, handling invalid input appropriately.
+     *
+     * @param sc The Scanner object to read input from.
+     * @return The whole number entered by the user.
+     */
     public static int onlyWholeNumber(Scanner sc) {
         while (true) {
             try {
@@ -17,6 +26,12 @@ public class Play {
         }
     }
 
+    /**
+     * Prompts the user to enter a float number, handling invalid input appropriately.
+     *
+     * @param sc The Scanner object to read input from.
+     * @return The float number entered by the user.
+     */
     public static float onlyNums(Scanner sc) {
         float cislo;
         try {
@@ -30,6 +45,11 @@ public class Play {
         return cislo;
     }
 
+    /**
+     * The main method providing a menu-driven interface for the movie database application.
+     *
+     * @param args Command line arguments (not used).
+     */
     public static void main(String[] args) {
         AnimatedMovies movies = new AnimatedMovies();
         Scanner input = new Scanner(System.in);
@@ -44,7 +64,7 @@ public class Play {
             System.out.println("6 - save to file");
             System.out.println("7 - load from file");
             System.out.println("8 - edit movie");
-            System.out.println("9 -  list actors, animators, that have been in more movies");
+            System.out.println("9 - list actors, animators, that have been in more movies");
             System.out.println("10 - list movies with an actor");
             System.out.println("0 - exit");
 
@@ -75,7 +95,7 @@ public class Play {
                             if (input.hasNextInt()) {
                                 int ratings = input.nextInt();
                                 input.nextLine(); // Clear the buffer
-                                result = movies.setRanking(name, ratings);
+                                result = movies.setRating(name, ratings);
                                 if (result) {
                                     System.out.println("Rating has been set.");
                                 } else {
@@ -100,7 +120,7 @@ public class Play {
                             movies.movieListing();
                             break;
                         case 6:
-                            System.out.println("Enter the name of the movie");
+                            System.out.println("Enter the name of the movie:");
                             name = input.nextLine();
                             movies.saveToFile(name);
                             break;
@@ -143,7 +163,6 @@ public class Play {
                 System.out.println("Unexpected end of input.");
                 input.nextLine(); // Clear the buffer
                 input = new Scanner(System.in); // Reset the scanner
-
             }
         }
     }

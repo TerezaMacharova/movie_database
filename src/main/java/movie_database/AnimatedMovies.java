@@ -7,11 +7,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-
+/**
+ * The AnimatedMovies class provides methods to manage a collection of movies, including adding, editing, removing, and listing movies.
+ * It supports both animated and live-action movies.
+ */
 public class AnimatedMovies {
     public static Map<String, Movie> MovieMap;
 
-
+    /**
+     * Constructs an AnimatedMovies object.
+     * Initializes the MovieMap by loading movies from the database.
+     */
     public AnimatedMovies() {
         Database jsonDatabase = new Database();
         MovieMap = jsonDatabase.loadMovies();
@@ -20,18 +26,30 @@ public class AnimatedMovies {
         }
     }
 
-
-    public boolean setFilm(String druh, String meno, String reziser, int hodnotenie, String comment, int rok, int vek, ArrayList<String> zoznamHercov) {
-        if (druh.equals("Live action movie")) {
-            if (MovieMap.put(meno, new Live_action_movie(meno, reziser, rok, hodnotenie, comment, zoznamHercov)) == null) {
-                Movie film = MovieMap.get(meno);
+    /**
+     * Adds or updates a movie in the MovieMap.
+     *
+     * @param type        The type of the movie (animated or live-action).
+     * @param name        The name of the movie.
+     * @param reziser     The director of the movie.
+     * @param hodnotenie  The rating of the movie.
+     * @param comment     A comment about the movie.
+     * @param rok         The year of release.
+     * @param vek         The recommended age for the movie (for animated movies).
+     * @param zoznamHercov The list of actors or animators involved in the movie.
+     * @return True if the movie was added successfully, otherwise false.
+     */
+    public boolean setFilm(String type, String name, String reziser, int hodnotenie, String comment, int rok, int vek, ArrayList<String> zoznamHercov) {
+        if (type.equals("Live action movie")) {
+            if (MovieMap.put(name, new Live_action_movie(name, reziser, rok, hodnotenie, comment, zoznamHercov)) == null) {
+                Movie film = MovieMap.get(name);
                 film.setRating(hodnotenie);
                 film.setComment(comment);
                 return true;
             }
-        } else if (druh.equals("Animated movie")) {
-            if (MovieMap.put(meno, new AnimatedMovie(meno, reziser, rok, hodnotenie, comment, vek, zoznamHercov)) == null) {
-                Movie movie = MovieMap.get(meno);
+        } else if (type.equals("Animated movie")) {
+            if (MovieMap.put(name, new AnimatedMovie(name, reziser, rok, hodnotenie, comment, vek, zoznamHercov)) == null) {
+                Movie movie = MovieMap.get(name);
                 movie.setRating(hodnotenie);
                 movie.setComment(comment);
                 return true;
@@ -40,6 +58,11 @@ public class AnimatedMovies {
         return false;
     }
 
+    /**
+     * Adds a new movie based on user input.
+     *
+     * @return A message indicating the result of the operation.
+     */
     public String addMovie() {
         Scanner sc = new Scanner(System.in);
         Scanner input = new Scanner(System.in);
@@ -79,8 +102,8 @@ public class AnimatedMovies {
 
             System.out.println("Enter viewer rating (1-10):");
             int rating = input.nextInt();
-
             input.nextLine();
+
             movie = new Live_action_movie(name, director, year, rating, comment, actorsList);
             boolean success = movie.setRating(rating);
 
@@ -136,6 +159,11 @@ public class AnimatedMovies {
         return "Movie was added successfully.";
     }
 
+    /**
+     * Edits an existing movie based on user input.
+     *
+     * @return A message indicating the result of the operation.
+     */
     public String editMovie() {
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print("Enter the name of a movie you want to change: ");
@@ -168,16 +196,17 @@ public class AnimatedMovies {
                 case 3:
                     System.out.print("Enter new year: ");
                     int newYear = scanner.nextInt();
-                    //MovieMap.remove();  // Remove old entry
+                    scanner.nextLine();  // Consume newline
                     movie.setYear(newYear);
                     break;
                 case 4:
                     System.out.print("Enter new rating: ");
                     int newRating = scanner.nextInt();
+                    scanner.nextLine();  // Consume newline
                     if (!movie.setRating(newRating)) {
                         return "Invalid rating. Please enter a number within the valid range.";
                     }
-                   break;
+                    break;
                 case 5:
                     System.out.print("Enter new comment: ");
                     String newComment = scanner.nextLine();
@@ -189,6 +218,7 @@ public class AnimatedMovies {
                     }
                     System.out.print("Enter new recommended age: ");
                     int newAge = scanner.nextInt();
+                    scanner.nextLine();  // Consume newline
                     ((AnimatedMovie) movie).setVek(newAge);
                     break;
                 default:
@@ -204,7 +234,12 @@ public class AnimatedMovies {
         }
     }
 
-
+    /**
+     * Retrieves a movie from the MovieMap.
+     *
+     * @param name The name of the movie to retrieve.
+     * @return The Movie object if found, otherwise null.
+     */
     public Movie getMovie(String name) {
         System.out.println("Debug: Retrieving movie with name: " + name);
         Movie movie = MovieMap.get(name);
@@ -216,7 +251,14 @@ public class AnimatedMovies {
         return movie;
     }
 
-    public boolean setRanking(String name, int ranking) {
+    /**
+     * Sets the rating of a movie.
+     *
+     * @param name    The name of the movie.
+     * @param ranking The rating to set.
+     * @return True if the ranking was set successfully, otherwise false.
+     */
+    public boolean setRating(String name, int ranking) {
         Movie movie = MovieMap.get(name);
         if (movie == null) {
             return false;
@@ -228,7 +270,12 @@ public class AnimatedMovies {
         return success;
     }
 
-
+    /**
+     * Removes a movie from the MovieMap.
+     *
+     * @param name The name of the movie to remove.
+     * @return True if the movie was removed successfully, otherwise false.
+     */
     public boolean removeMovie(String name) {
         if (MovieMap.remove(name) != null) {
             new Database().saveMovies(MovieMap);
@@ -237,7 +284,9 @@ public class AnimatedMovies {
         return false;
     }
 
-
+    /**
+     * Lists all movies in the MovieMap.
+     */
     public void movieListing() {
         System.out.println("Debug: MovieMap size is " + MovieMap.size()); // Debug statement
 
@@ -268,8 +317,11 @@ public class AnimatedMovies {
         }
     }
 
-
-
+    /**
+     * Lists movies that include a specific actor or animator.
+     *
+     * @param name The name of the actor or animator.
+     */
     public static void actorOneMovie(String name) {
         System.out.println("Debug: Listing movies with actor/animator: " + name);
         boolean found = false;
@@ -292,7 +344,9 @@ public class AnimatedMovies {
         }
     }
 
-
+    /**
+     * Lists actors or animators who have participated in multiple movies.
+     */
     public static void actorMoreMovies() {
         HashMap<String, ArrayList<Movie>> actorMoreMovies = new HashMap<>();
 
@@ -323,13 +377,19 @@ public class AnimatedMovies {
         }
     }
 
-
+    /**
+     * Prints a list of actors and animators who participated in multiple movies.
+     */
     public static void actorMoreMoviesPrint() {
         System.out.println("List of actors and animators who participated in multiple movies:");
         actorMoreMovies();
     }
 
-
+    /**
+     * Saves a movie's details to a text file.
+     *
+     * @param meno The name of the movie to save.
+     */
     public void saveToFile(String meno) {
         Movie movie = MovieMap.get(meno);
         if (movie != null) {
@@ -356,7 +416,7 @@ public class AnimatedMovies {
                     writer.write(herec);
                     writer.newLine();
                 }
-                System.out.println("Film " + meno + " bol uloženy do súboru.");
+                System.out.println("Film " + meno + " bol uložený do súboru.");
             } catch (IOException e) {
                 System.out.println("Chyba pri ukladaní do súboru.");
             }
@@ -365,7 +425,12 @@ public class AnimatedMovies {
         }
     }
 
-
+    /**
+     * Reads a movie's details from a text file and adds it to the MovieMap.
+     *
+     * @param fileName The name of the file to read from.
+     * @return The Movie object if read successfully, otherwise null.
+     */
     public static Movie readFromFile(String fileName) {
         System.out.println("Debug: Reading from file " + fileName);
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -393,7 +458,7 @@ public class AnimatedMovies {
                     rating = Integer.parseInt(line.substring(12).trim());
                 } else if (line.startsWith("Komentár: ")) {
                     comment = line.substring(10).trim();
-                } else if (line.startsWith("Vek: ")) {
+                } else if (line.startsWith("Odporúčaný vek: ")) {
                     vek = Integer.parseInt(line.substring(15).trim());
                 } else if (!line.isEmpty() && !line.startsWith("Druh: ") && !line.startsWith("Meno: ") && !line.startsWith("Režisér: ") && !line.startsWith("Rok: ") && !line.startsWith("Hodnotenie: ") && !line.startsWith("Komentár: ") && !line.startsWith("Odporúčaný vek: ")) {
                     zoznamHercov.add(line);
@@ -412,7 +477,7 @@ public class AnimatedMovies {
             System.out.println("Debug: Successfully read movie " + nazov + " from file.");
             return movie;
         } catch (IOException e) {
-            System.out.println("Chyba pri čítaní zo súboru.");
+            System.out.println("Error occurred with file reading.");
             e.printStackTrace();
         }
         return null;

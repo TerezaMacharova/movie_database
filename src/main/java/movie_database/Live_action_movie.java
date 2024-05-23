@@ -18,16 +18,6 @@ public class Live_action_movie extends Movie {
     }
 
 
-
-    public boolean setRatings(int newRating) {
-        if (newRating >= 1 && newRating <= 10) {
-            this.rating = newRating;
-            return true;
-        }
-        return false;
-    }
-
-
     @Override
     public String toString() {
         return super.toString() + "\nActors: " + actorsList + "\nRating: "+ rating;

@@ -12,16 +12,31 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Database class provides methods to load and save movies from/to a JSON file
+ */
 public class Database {
     private static final String FILE_PATH = "movies.json";
     private Gson gson = new Gson();
 
+
+    /**
+     * Constructor for the database class
+     * Initializes the Gson instance with a custom type adapter for the Movie class
+     */
     public Database() {
         gson = new GsonBuilder()
                 .registerTypeAdapter(Movie.class, new MovieTypeAdapter())
                 .create();
     }
 
+
+    /**
+     * Loads movies from the JSON file.
+     * @return map of movies loaded from the JSON file,
+     * if the file doesn't exist or is empty returns an empty map
+     */
     public Map<String, Movie> loadMovies() {
         File file = new File(FILE_PATH);
         if (!file.exists() || file.length() == 0) {
@@ -47,6 +62,10 @@ public class Database {
     }
 
 
+    /**
+     * Saves the movies to a JSON file
+     * @param movies map of the movies to be saved
+     */
     public void saveMovies(Map<String, Movie> movies) {
         try (FileWriter writer = new FileWriter(FILE_PATH)) {
             gson.toJson(movies, writer);
