@@ -464,16 +464,16 @@ public class MovieManager {
                     name = line.substring(6).trim();
                     System.out.println("Debug: Parsed name - " + name);
                 } else if (line.startsWith("Director: ")) {
-                    director = line.substring(9).trim();
+                    director = line.substring(10).trim();
                     System.out.println("Debug: Parsed reziser - " + director);
                 } else if (line.startsWith("Year: ")) {
-                    year = Integer.parseInt(line.substring(5).trim());
+                    year = Integer.parseInt(line.substring(6).trim());
                     System.out.println("Debug: Parsed rok - " + year);
                 } else if (line.startsWith("Rating: ")) {
-                    rating = Integer.parseInt(line.substring(12).trim());
+                    rating = Integer.parseInt(line.substring(8).trim());
                     System.out.println("Debug: Parsed rating - " + rating);
                 } else if (line.startsWith("Comment: ")) {
-                    comment = line.substring(10).trim();
+                    comment = line.substring(9).trim();
                     System.out.println("Debug: Parsed comment - " + comment);
                 } else if (line.startsWith("Age: ")) {
                     age = Integer.parseInt(line.substring(5).trim());

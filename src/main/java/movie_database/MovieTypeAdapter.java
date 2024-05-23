@@ -75,10 +75,10 @@ public class MovieTypeAdapter implements JsonSerializer<Movie>, JsonDeserializer
         int year = json.has("year") ? json.get("year").getAsInt() : 0;
         int rating = json.has("rating") ? json.get("rating").getAsInt() : 0;
         String comment = json.has("comment") ? json.get("comment").getAsString() : null;
-        int vek = json.has("age") ? json.get("vek").getAsInt() : 0;
+        int age = json.has("age") ? json.get("age").getAsInt() : 0;
         ArrayList<String> actorsList = json.has("actorsList") ? context.deserialize(json.get("actorsList"), new TypeToken<ArrayList<String>>(){}.getType()) : new ArrayList<>();
 
-        return new AnimatedMovie(name, director, year, rating, comment, vek, actorsList);
+        return new AnimatedMovie(name, director, year, rating, comment, age, actorsList);
     }
 
     /**
