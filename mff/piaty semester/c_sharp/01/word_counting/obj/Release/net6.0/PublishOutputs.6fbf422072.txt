@@ -1,5 +1,0 @@
-C:\Users\Asus\Desktop\mff\piaty semester\c_sharp\01\word_counting\word_counting.exe
-C:\Users\Asus\Desktop\mff\piaty semester\c_sharp\01\word_counting\word_counting.dll
-C:\Users\Asus\Desktop\mff\piaty semester\c_sharp\01\word_counting\word_counting.deps.json
-C:\Users\Asus\Desktop\mff\piaty semester\c_sharp\01\word_counting\word_counting.runtimeconfig.json
-C:\Users\Asus\Desktop\mff\piaty semester\c_sharp\01\word_counting\word_counting.pdb
