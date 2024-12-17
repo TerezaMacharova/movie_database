@@ -1,3 +1,0 @@
-﻿  csv.cpp
-C:\Users\Asus\Desktop\mff\piaty semester\cpp\macharot\finalhw\csv\csv.cpp(373,31): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  csv.vcxproj -> C:\Users\Asus\Desktop\mff\piaty semester\cpp\macharot\finalhw\csv\x64\Debug\csv.exe
